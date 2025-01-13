@@ -15,7 +15,7 @@ export default function ProfilePage() {
 
         {/* Points Section */}
         <div className="bg-green-200 p-6 rounded-xl text-center mb-6">
-          <p className="text-4xl font-bold text-green-700 mb-2">500</p>
+          <p className="text-4xl font-bold text-green-700 mb-2">500 🪙 </p>
           <p className="text-sm text-green-600">نقاطى</p>
         </div>
 
@@ -26,7 +26,7 @@ export default function ProfilePage() {
           </p>
           <Link href="/quiz" className="block">
             <Button className="w-full bg-green-500 hover:bg-green-600 text-white py-6 text-lg rounded-xl transition-all transform hover:scale-105">
-              العب داوقالى وزود نقاطك
+              العب دلوقتي وزود نقاطك
             </Button>
           </Link>
         </div>

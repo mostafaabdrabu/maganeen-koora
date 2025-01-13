@@ -1,7 +1,8 @@
 import "./globals.css";
-import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Navbar } from "@/components/navbar";
+import SoccerBalls from "@/components/soccer-balls";
+import { Metadata } from "next";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,9 +20,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <main
-          className="min-h-screen pb-20 bg-gradient-to-b from-green-500 to-green-700"
+          className="bg-gradient-to-br from-blue-500 via-green-500 to-yellow-500 relative overflow-hidden"
           dir="rtl"
         >
+          <SoccerBalls />
           {children}
         </main>
         <Navbar />
