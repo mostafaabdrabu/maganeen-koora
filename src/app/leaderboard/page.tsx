@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -26,7 +25,7 @@ const mockData: Player[] = [
 ];
 
 export default function Leaderboard() {
-  const [players, setPlayers] = useState(mockData);
+  const [players] = useState(mockData);
   const loggedInUser = {
     id: 10,
     avatar: "/avatars/user.png",
