@@ -20,7 +20,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <main
-          className="bg-gradient-to-br from-blue-500 via-green-500 to-yellow-500 relative overflow-hidden"
+          className="bg-gradient-to-br from-blue-500 via-green-500 to-yellow-500 relative pb-20 md:pb-0 overflow-hidden"
           dir="rtl"
         >
           <SoccerBalls />

@@ -15,7 +15,7 @@ export default function ProfilePage() {
 
         {/* Points Section */}
         <div className="bg-green-200 p-6 rounded-xl text-center mb-6">
-          <p className="text-4xl font-bold text-green-700 mb-2">500 🪙 </p>
+          <p className="text-4xl font-bold text-green-700 mb-2">500 </p>
           <p className="text-sm text-green-600">نقاطى</p>
         </div>
 

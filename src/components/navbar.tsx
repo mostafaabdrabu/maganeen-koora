@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, User, FileText } from "lucide-react";
+import { Home, User, FileText, Trophy } from "lucide-react";
 import Image from "next/image"; // For using the logo image
 
 export function Navbar() {
@@ -36,7 +36,6 @@ export function Navbar() {
                 isActive("/") ? "text-green-500" : "text-gray-600"
               }`}
             >
-              {/* <Home className="w-6 h-6" /> */}
               <span className="text-sm">Home</span>
             </Link>
             <Link
@@ -45,8 +44,15 @@ export function Navbar() {
                 isActive("/profile") ? "text-green-500" : "text-gray-600"
               }`}
             >
-              {/* <User className="w-6 h-6" /> */}
               <span className="text-sm">Profile</span>
+            </Link>
+            <Link
+              href="/leaderboard"
+              className={`flex items-center space-x-2 hover:text-green-500 ${
+                isActive("/leaderboard") ? "text-green-500" : "text-gray-600"
+              }`}
+            >
+              <span className="text-sm">Leaderboard</span>
             </Link>
             <Link
               href="/terms"
@@ -54,7 +60,6 @@ export function Navbar() {
                 isActive("/terms") ? "text-green-500" : "text-gray-600"
               }`}
             >
-              {/* <FileText className="w-6 h-6" /> */}
               <span className="text-sm">Terms</span>
             </Link>
           </div>
@@ -83,6 +88,15 @@ export function Navbar() {
             >
               <User className="w-6 h-6" />
               <span className="text-xs mt-1">Profile</span>
+            </Link>
+            <Link
+              href="/leaderboard"
+              className={`flex flex-col items-center p-2 ${
+                isActive("/leaderboard") ? "text-green-500" : "text-gray-600"
+              }`}
+            >
+              <Trophy className="w-6 h-6" />
+              <span className="text-xs mt-1">Leaderboard</span>
             </Link>
             <Link
               href="/terms"
