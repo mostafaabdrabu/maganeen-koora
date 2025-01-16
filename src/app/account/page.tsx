@@ -1,5 +1,5 @@
+import AccountForm from "./account-form";
 import { createClient } from "@/utils/supabase/server";
-import Profile from "./profile";
 
 export default async function Account() {
   const supabase = await createClient();
@@ -11,7 +11,7 @@ export default async function Account() {
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm">
-        <Profile user={user} />
+        <AccountForm user={user} />
       </div>
     </div>
   );
