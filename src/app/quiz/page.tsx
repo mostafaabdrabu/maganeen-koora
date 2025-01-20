@@ -1,85 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Clock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-
-const questions = [
-  {
-    question:
-      "من من اللاعبين التاليين لا يحمل الرقم القياسي للعب في أكبر عدد من كؤوس العالم؟",
-    options: [
-      "أنطونيو كاربخال",
-      "لوثار ماتيوس",
-      "فرانز بيكنباور",
-      "رافاييل ماركيز",
-    ],
-    correct: 3,
-  },
-  {
-    question: "أي دولة فازت بكأس العالم لأول مرة في عام 1930؟",
-    options: ["البرازيل", "الأرجنتين", "الأوروغواي", "إيطاليا"],
-    correct: 2,
-  },
-  {
-    question: "من هو اللاعب الذي سجل أكبر عدد من الأهداف في تاريخ كأس العالم؟",
-    options: ["بيليه", "ميروسلاف كلوزه", "رونالدو", "جوست فونتين"],
-    correct: 1,
-  },
-  {
-    question: "ما هي المدة القياسية لمباراة كرة القدم؟",
-    options: ["80 دقيقة", "85 دقيقة", "90 دقيقة", "95 دقيقة"],
-    correct: 2,
-  },
-  {
-    question: "من هو اللاعب المعروف باسم 'الأسطورة'؟",
-    options: [
-      "ليونيل ميسي",
-      "كريستيانو رونالدو",
-      "دييجو مارادونا",
-      "يوهان كرويف",
-    ],
-    correct: 0,
-  },
-  {
-    question: "كم عدد اللاعبين في فريق كرة القدم أثناء المباراة؟",
-    options: ["9", "10", "11", "12"],
-    correct: 2,
-  },
-  {
-    question: "من هو اللاعب الذي فاز بأكبر عدد من الكرات الذهبية؟",
-    options: [
-      "ليونيل ميسي",
-      "كريستيانو رونالدو",
-      "ميشيل بلاتيني",
-      "يوهان كرويف",
-    ],
-    correct: 0,
-  },
-  {
-    question: "أي نادي فاز بأكبر عدد من ألقاب دوري أبطال أوروبا؟",
-    options: ["ريال مدريد", "برشلونة", "بايرن ميونخ", "ليفربول"],
-    correct: 0,
-  },
-  {
-    question: "من هو المدرب الذي فاز بأكبر عدد من ألقاب دوري أبطال أوروبا؟",
-    options: [
-      "بيب غوارديولا",
-      "كارلو أنشيلوتي",
-      "زين الدين زيدان",
-      "أليكس فيرغسون",
-    ],
-    correct: 3,
-  },
-  {
-    question: "أي دولة فازت بأكبر عدد من كؤوس العالم؟",
-    options: ["البرازيل", "ألمانيا", "إيطاليا", "الأرجنتين"],
-    correct: 0,
-  },
-];
 
 export default function QuizPage() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -87,7 +13,30 @@ export default function QuizPage() {
   const [timeLeft, setTimeLeft] = useState(60); // 60 seconds timer
   const [score, setScore] = useState(0);
   const [showScore, setShowScore] = useState(false);
+  const [questions, setQuestions] = useState<question[]>([]);
+  const [loading, setLoading] = useState(true);
+  const getQuestions = useCallback(async () => {
+    try {
+      setLoading(true);
 
+      const questions = await fetch("/api/questions", {
+        method: "GET",
+      });
+      const data = await questions.json();
+      if (data) {
+        setQuestions(data);
+      }
+    } catch (error) {
+      console.log(error);
+      alert("Error loading user data!");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    getQuestions();
+  }, [getQuestions]);
   // Timer functionality
   useEffect(() => {
     if (timeLeft === 0) {
@@ -123,6 +72,10 @@ export default function QuizPage() {
     setTimeLeft(60);
   };
 
+  if (loading) {
+    return <div>Loading...</div>; // You can add a spinner or loading state here
+  }
+
   return (
     <div
       className="min-h-screen flex flex-col items-center justify-center p-4"
@@ -147,12 +100,12 @@ export default function QuizPage() {
               لقد حصلت على {score} من {questions.length}
             </p>
             <div className="space-y-4">
-              <Button
+              {/* <Button
                 onClick={restartQuiz}
                 className="w-full bg-green-500 hover:bg-green-600 text-white"
               >
                 حاول مرة أخرى
-              </Button>
+              </Button> */}
               <Link href="/" className="block">
                 <Button
                   variant="outline"
@@ -201,7 +154,7 @@ export default function QuizPage() {
               </h2>
 
               <div className="space-y-4">
-                {questions[currentQuestion].options.map((option, index) => (
+                {questions[currentQuestion].choices.map((option, index) => (
                   <Button
                     key={index}
                     onClick={() => setSelectedOption(index)}

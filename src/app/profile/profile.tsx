@@ -10,6 +10,7 @@ import { User } from "@supabase/supabase-js";
 export default function Profile({ user }: { user: User | null }) {
   const supabase = createClient();
   const [userData, setUserData] = useState<any>(null); // Store user data
+  const [userPoints, setUserPoints] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
   // Function to fetch user data
   const getProfile = useCallback(async () => {
@@ -38,9 +39,38 @@ export default function Profile({ user }: { user: User | null }) {
     }
   }, [user, supabase]);
 
+  const getUserPoints = useCallback(async () => {
+    try {
+      setLoading(true);
+
+      const { data, error, status } = await supabase
+        .from("user_competitions")
+        .select(`points_earned`)
+        .eq("user_id", user?.id)
+        .single();
+      if (error && status !== 406) {
+        console.log(error);
+        throw error;
+      }
+      console.log(data);
+      if (data) {
+        setUserPoints(data.points_earned);
+      }
+    } catch (error) {
+      console.log(error);
+      alert("Error loading user data!");
+    } finally {
+      setLoading(false);
+    }
+  }, [user, supabase]);
+
   useEffect(() => {
     getProfile();
   }, [user, getProfile]);
+
+  useEffect(() => {
+    getUserPoints();
+  }, [user, getUserPoints]);
 
   if (loading) {
     return <div>Loading...</div>; // You can add a spinner or loading state here
@@ -67,13 +97,13 @@ export default function Profile({ user }: { user: User | null }) {
         </p>
 
         {/* Points Section */}
+
         <div className="bg-green-200 p-6 rounded-xl text-center mb-6">
           <p className="text-4xl font-bold text-green-700 mb-2">
-            {userData?.points}
+            {userPoints || "انت لست مشترك"}
           </p>
-          <p className="text-sm text-green-600">نقاطى</p>
+          {!userPoints || <p className="text-sm text-green-600">نقاطى</p>}
         </div>
-
         {/* Call-to-Action Section */}
         <div className="text-center">
           <p className="text-gray-700 mb-4">
