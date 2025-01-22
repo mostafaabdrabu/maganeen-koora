@@ -5,10 +5,18 @@ import { usePathname } from "next/navigation";
 import { Home, User, FileText, Trophy } from "lucide-react";
 import Image from "next/image"; // For using the logo image
 
+import { User as UserEntity } from "@supabase/supabase-js";
+import useUserStore from "@/store/userStore";
+
 export function Navbar() {
   const pathname = usePathname();
+  const user = useUserStore((state) => state.user);
 
   const isActive = (path: string) => pathname === path;
+
+  const showNavbar = pathname !== "/login";
+  if (!showNavbar) return null;
+  if (!user) return null;
 
   return (
     <>

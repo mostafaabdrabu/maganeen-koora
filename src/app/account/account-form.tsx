@@ -36,7 +36,6 @@ export default function AccountForm({ user }: { user: User | null }) {
         console.log(error);
         throw error;
       }
-      console.log(data);
       if (data) {
         setFirstName(data.first_name);
         setLastName(data.last_name);

@@ -36,7 +36,6 @@ export async function GET(req: NextRequest) {
       correct: questionChoices.findIndex((choice) => choice.is_correct),
     };
   });
-  console.log(formattedQuestions);
 
   return NextResponse.json(formattedQuestions);
 }

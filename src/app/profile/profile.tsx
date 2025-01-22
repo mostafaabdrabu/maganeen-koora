@@ -27,7 +27,6 @@ export default function Profile({ user }: { user: User | null }) {
         console.log(error);
         throw error;
       }
-      console.log(data);
       if (data) {
         setUserData(data);
       }
@@ -52,7 +51,6 @@ export default function Profile({ user }: { user: User | null }) {
         console.log(error);
         throw error;
       }
-      console.log(data);
       if (data) {
         setUserPoints(data.points_earned);
       }

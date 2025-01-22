@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Clock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -12,9 +12,16 @@ export default function QuizPage() {
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [timeLeft, setTimeLeft] = useState(60); // 60 seconds timer
   const [score, setScore] = useState(0);
+  const [points, setPoints] = useState(0);
   const [showScore, setShowScore] = useState(false);
   const [questions, setQuestions] = useState<question[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const pointsRef = useRef(points); // Create a ref to track the latest points value
+
+  useEffect(() => {
+    pointsRef.current = points; // Update the ref whenever `points` changes
+  }, [points]);
   const getQuestions = useCallback(async () => {
     try {
       setLoading(true);
@@ -51,17 +58,47 @@ export default function QuizPage() {
     return () => clearInterval(timer);
   }, [timeLeft, currentQuestion]);
 
-  const handleNextClick = () => {
+  const handleNextClick = async () => {
+    // Add points for the current question
+    var newPoints = points;
     if (selectedOption === questions[currentQuestion].correct) {
       setScore(score + 1);
+      newPoints = points + 100;
+    } else {
+      newPoints = points + 10;
     }
+    setPoints(newPoints);
+    pointsRef.current = newPoints;
 
+    // Check if it's the last question
     if (currentQuestion < questions.length - 1) {
+      // Move to the next question
       setCurrentQuestion(currentQuestion + 1);
       setSelectedOption(null);
       setTimeLeft(60); // Reset timer for the next question
     } else {
+      // Save points and show the score
+      await saveUserEarnedPoints();
       setShowScore(true);
+    }
+  };
+  const saveUserEarnedPoints = async () => {
+    try {
+      setLoading(true);
+      await fetch("/api/points/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json", // Set the content type to JSON
+        },
+        body: JSON.stringify({
+          points_earned: pointsRef.current, // Example points to add
+        }),
+      });
+    } catch (error) {
+      console.log(error);
+      alert("Error loading user data!");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -97,8 +134,14 @@ export default function QuizPage() {
               انتهى الاختبار!
             </h2>
             <p className="text-xl text-gray-700">
-              لقد حصلت على {score} من {questions.length}
+              لقد جاوبت صح على {score} من {questions.length} سؤال
             </p>
+            <div className="bg-green-200 p-6 rounded-xl text-center mb-6">
+              <p className="text-4xl font-bold text-green-700 mb-2">
+                {pointsRef.current} +
+              </p>
+              <p className="text-sm text-green-600">نقاط</p>
+            </div>
             <div className="space-y-4">
               {/* <Button
                 onClick={restartQuiz}

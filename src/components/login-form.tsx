@@ -12,19 +12,59 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { login, signup } from "@/app/login/actions";
-import { useState } from "react";
+import { useActionState, useState } from "react";
+import useUserStore from "@/store/userStore"; // Import Zustand store
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
   const [isSignUp, setIsSignUp] = useState(false);
+  const setUser = useUserStore((state) => state.setUser); // Get the setUser function from Zustand
+  const router = useRouter();
+
+  // Handle form submission for login
+  const [loginState, loginFormAction] = useActionState(
+    async (prevState: any, formData: FormData) => {
+      const user = await login(formData); // Call the login server action
+      if (user) {
+        setUser(user); // Update Zustand store with the user data
+        router.push("/account"); // Redirect to the profile page
+      }
+      return user;
+    },
+    null
+  );
+
+  // Handle form submission for signup
+  const [signupState, signupFormAction] = useActionState(
+    async (prevState: any, formData: FormData) => {
+      const user = await signup(formData); // Call the signup server action
+      if (user) {
+        setUser(user); // Update Zustand store with the user data
+        router.push("/account");
+      }
+      return user;
+    },
+    null
+  );
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props} dir="rtl">
       <Card className="z-10">
         <CardHeader>
           <CardTitle className="text-2xl">
+            <div className="flex justify-center animate-bounce mt-4">
+              <Image
+                src="/logo.png"
+                alt="Football"
+                width={100}
+                height={100}
+                className="w-24 h-24"
+              />
+            </div>
             {isSignUp ? "إنشاء حساب" : "تسجيل الدخول"}
           </CardTitle>
           <CardDescription>
@@ -86,7 +126,7 @@ export function LoginForm({
               </div>
               <Button
                 type="submit"
-                formAction={isSignUp ? signup : login}
+                formAction={isSignUp ? signupFormAction : loginFormAction} // Use the appropriate form action
                 className="w-full"
               >
                 {isSignUp ? "إنشاء حساب" : "تسجيل الدخول"}
