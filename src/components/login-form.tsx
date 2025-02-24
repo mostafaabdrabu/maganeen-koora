@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { login, signup } from "@/app/login/actions";
+import { login, phoneLogin, signup } from "@/app/login/actions";
 import { useActionState, useState } from "react";
 import useUserStore from "@/store/userStore"; // Import Zustand store
 import { useRouter } from "next/navigation";
@@ -29,6 +29,17 @@ export function LoginForm({
   const [loginState, loginFormAction] = useActionState(
     async (prevState: any, formData: FormData) => {
       const user = await login(formData); // Call the login server action
+      if (user) {
+        setUser(user); // Update Zustand store with the user data
+        router.push("/account"); // Redirect to the profile page
+      }
+      return user;
+    },
+    null
+  );
+  const [phoneLoginState, phoneLoginFormAction] = useActionState(
+    async (prevState: any, formData: FormData) => {
+      const user = await phoneLogin(formData); // Call the login server action
       if (user) {
         setUser(user); // Update Zustand store with the user data
         router.push("/account"); // Redirect to the profile page
@@ -101,32 +112,32 @@ export function LoginForm({
                 </>
               )}
               <div className="grid gap-2">
-                <Label htmlFor="email">البريد الإلكتروني</Label>
+                <Label htmlFor="phone">رقم الموبيل</Label>
                 <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="example@example.com"
+                  id="phone"
+                  name="phone"
+                  type="phone"
+                  // placeholder="example@example.com"
                   required
                 />
               </div>
               <div className="grid gap-2">
                 <div className="flex items-center">
                   <Label htmlFor="password">كلمة المرور</Label>
-                  {!isSignUp && (
+                  {/* {!isSignUp && (
                     <a
                       href="#"
                       className="mr-auto inline-block text-sm underline-offset-4 hover:underline"
                     >
                       نسيت كلمة المرور؟
                     </a>
-                  )}
+                  )} */}
                 </div>
                 <Input id="password" name="password" type="password" required />
               </div>
               <Button
                 type="submit"
-                formAction={isSignUp ? signupFormAction : loginFormAction} // Use the appropriate form action
+                formAction={isSignUp ? signupFormAction : phoneLoginFormAction} // Use the appropriate form action
                 className="w-full"
               >
                 {isSignUp ? "إنشاء حساب" : "تسجيل الدخول"}

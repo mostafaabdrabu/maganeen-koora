@@ -3,7 +3,8 @@ import { type NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   const supabase = await createClient();
-
+  //get active subscription
+  //get user answers today
   const { data: questions, error: questionError } = await supabase
     .rpc("get_random_questions", { limit_count: 5 })
     .returns<questions[]>();

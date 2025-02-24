@@ -23,16 +23,35 @@ export async function login(formData: FormData) {
   return authData.user;
 }
 
+export async function phoneLogin(formData: FormData) {
+  const supabase = await createClient();
+  console.log(("+2" + formData.get("phone")) as string, "phone");
+  const data = {
+    phone: ("+2" + formData.get("phone")) as string,
+    password: formData.get("password") as string,
+  };
+
+  const { data: authData, error } = await supabase.auth.signInWithPassword(
+    data
+  );
+  if (error) {
+    redirect("/error");
+  }
+
+  // Return the user data
+  return authData.user;
+}
+
 export async function signup(formData: FormData) {
   const supabase = await createClient();
 
   const data = {
-    email: formData.get("email") as string,
+    phone: ("+2" + formData.get("phone")) as string,
     password: formData.get("password") as string,
   };
 
   const { data: authData, error } = await supabase.auth.signUp({
-    email: data.email,
+    phone: data.phone,
     password: data.password,
     options: {
       data: {
@@ -42,7 +61,6 @@ export async function signup(formData: FormData) {
       },
     },
   });
-
   if (error) {
     redirect("/error");
   }

@@ -15,10 +15,6 @@ export async function POST(req: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  console.log({
-    user_id: user?.id,
-    points_to_add: body.points_earned,
-  });
   try {
     // Call the SQL function to update points
     const { data, error } = await supabase.rpc("update_points_earned", {
